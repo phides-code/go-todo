@@ -9,7 +9,7 @@ func main() {
 	for {
 		displayMenuItems()
 
-		menuChoice, err := readMenuChoice()
+		menuChoice, err := readChoice()
 
 		if err != nil {
 			fmt.Println("Error reading menu selection:", err)
@@ -25,7 +25,6 @@ func main() {
 			createTodo()
 			continue
 		case "D":
-			// fmt.Println("Got D")
 			deleteTodo()
 			continue
 		case "Q":

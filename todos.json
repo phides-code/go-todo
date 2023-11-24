@@ -1,9 +1,5 @@
 [
     {
-        "id": "e9c37b6d-8023-4e2a-8a05-6963488d340b",
-        "content": "Learn Go"
-    },
-    {
         "id": "af6e4ba9-1fdb-4ebf-8b68-e910cbab50a9",
         "content": "Build CLI application"
     },
@@ -12,7 +8,7 @@
         "content": "Test the application"
     },
     {
-        "id": "238c53a5-f369-4c24-baf1-52e7ee939f0f",
-        "content": "something else"
+        "id": "39bbed1e-0156-4f75-96a1-ed2d42fbd239",
+        "content": "move on with life "
     }
 ]

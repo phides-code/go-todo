@@ -21,7 +21,7 @@ func displayMenuItems() {
 	fmt.Printf("Your choice: ")
 }
 
-func readMenuChoice() (string, error) {
+func readChoice() (string, error) {
 	reader := bufio.NewReader(os.Stdin)
 
 	input, err := reader.ReadString('\n')

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/google/uuid"
@@ -14,6 +15,8 @@ type Todo struct {
 	ID      string `json:"id"`
 	Content string `json:"content"`
 }
+
+var numberOfTodos int
 
 var filename string = "todos.json"
 
@@ -29,6 +32,8 @@ func readTodosFromFile() ([]Todo, error) {
 		return nil, err
 	}
 
+	numberOfTodos = len(todos)
+
 	return todos, nil
 }
 
@@ -40,9 +45,10 @@ func listTodos() {
 	}
 
 	fmt.Println("Todos:")
-	for _, todo := range readTodos {
-		fmt.Printf("%s\n", todo.Content)
+	for index, todo := range readTodos {
+		fmt.Printf("%d. %s\n", index+1, todo.Content)
 	}
+
 }
 
 func promptForContent() (string, error) {
@@ -79,29 +85,19 @@ func createTodo() {
 		Content: content,
 	}
 
-	// write content to json file
+	// get existing todos
 	existingTodos, err := readTodosFromFile()
 	if err != nil {
 		fmt.Println("Error reading JSON:", err)
 		return
 	}
+
+	// append new todo
 	existingTodos = append(existingTodos, newTodo)
 
-	// Encode the updated slice back to JSON
-	updatedData, err := json.MarshalIndent(existingTodos, "", "    ")
-	if err != nil {
-		fmt.Println("Error encoding JSON:", err)
-		return
-	}
-
-	// Write the updated JSON data back to the file
-	if err := os.WriteFile(filename, updatedData, 0644); err != nil {
-		fmt.Println("Error writing to file:", err)
-		return
-	}
+	writeTodosToFile(existingTodos)
 
 	fmt.Println("Todo added successfully.")
-
 }
 
 func isBlank(s string) bool {
@@ -112,4 +108,53 @@ func isBlank(s string) bool {
 func deleteTodo() {
 	listTodos()
 
+	var index int
+
+	for {
+		fmt.Printf("Delete number: ")
+
+		todoChoice, err := readChoice()
+		if err != nil {
+			fmt.Println("Error reading selection:", err)
+			return
+		}
+
+		index, err = strconv.Atoi(todoChoice)
+		if err != nil {
+			continue
+		}
+
+		if index < 1 || index > numberOfTodos {
+			continue
+		}
+		break
+	}
+
+	existingTodos, err := readTodosFromFile()
+	if err != nil {
+		fmt.Println("Error reading JSON:", err)
+		return
+	}
+
+	// Remove the element at the specified index
+	existingTodos = append(existingTodos[:index-1], existingTodos[index:]...)
+
+	fmt.Println("Removing todo " + strconv.Itoa(index))
+
+	writeTodosToFile(existingTodos)
+}
+
+func writeTodosToFile(todos []Todo) {
+	// Encode the slice back to JSON
+	updatedData, err := json.MarshalIndent(todos, "", "    ")
+	if err != nil {
+		fmt.Println("Error encoding JSON:", err)
+		return
+	}
+
+	// Write the JSON data to the file
+	if err := os.WriteFile(filename, updatedData, 0644); err != nil {
+		fmt.Println("Error writing to file:", err)
+		return
+	}
 }
